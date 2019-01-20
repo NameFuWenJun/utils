@@ -1,0 +1,50 @@
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "query_string": {
+            "query": "*",
+            "analyze_wildcard": true
+          }
+        },
+        {
+          "range": {
+            "create_time": {
+              "gte": "now-1h",
+              "lte": "now",
+              "format": "epoch_millis"
+            }
+          }
+        }
+      ],
+      "must_not": []
+    }
+  },
+  "_source": {
+    "excludes": []
+  },
+  "aggs": {
+    "1": {
+      "terms": {
+        "field": "taskId",
+        "size": 50,
+        "order": {
+          "_term": "desc"
+        }
+      },
+  "aggs": {
+    "2": {
+      "terms": {
+        "field": "taskInstanceId.keyword",
+        "size": 50,
+        "order": {
+          "_term": "desc"
+        }
+      }
+    }
+  }
+}
+}
+}

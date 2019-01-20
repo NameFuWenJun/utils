@@ -1,0 +1,83 @@
+{
+    "size": 0, 
+    "aggs": {
+        "2": {
+            "terms": {
+                "field": "taskId", 
+                "size": 50,
+                "order": {
+                    "_term": "desc"
+                }
+            }, 
+            "aggs": {
+                "3": {
+                    "terms": {
+                        "field": "taskInstanceId.keyword", 
+                        "size": 50, 
+                        "order": {
+                            "_term": "desc"
+                        }
+                    }, 
+                    "aggs": {
+                        "1": {
+                            "top_hits": {
+                                "docvalue_fields": [
+                                    "url.keyword"
+                                ], 
+                                "_source": true, 
+                                "size": 5, 
+                                "sort": [
+                                    {
+                                        "create_time": {
+                                            "order": "desc"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, 
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "query_string": {
+                        "query": "*", 
+                        "analyze_wildcard": true
+                    }
+                }, 
+                {
+                    "range": {
+                        "proxy_retry_count": {
+                            "gte": 50, 
+                            "lt": null
+                        }
+                    }
+                }, 
+                {
+                    "match_phrase": {
+                        "port": {
+                            "query": "65333"
+                        }
+                    }
+                }, 
+                {
+                    "range": {
+                        "create_time": {
+                            "gte": "now-4h", 
+                            "lte": "now", 
+                            "format": "epoch_millis"
+                        }
+                    }
+                }
+            ], 
+            "must_not": [ ]
+        }
+    }, 
+    "_source": {
+        "excludes": [ ]
+    }
+}
