@@ -125,18 +125,24 @@ public class SQLUtils {
         }
         return resultMap;
     }
-    
+    /**
+     * 该upadata包含插入以及更新及其他功能
+     * @param sql
+     * @param conditions
+     * @return
+     */
     public int update(String sql,Object [] conditions){
         QueryRunner queryRunner=new QueryRunner(druidDataSource);
         int result=0;
         try {
             result=queryRunner.update(sql, conditions);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return result;
     }
+    
+    
     /**
      * 含有事务的插入语句
      * @param jsonArray  jsonArray为一个Json数组
@@ -163,11 +169,9 @@ public class SQLUtils {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // TODO Auto-generated catch block
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             return 0;
