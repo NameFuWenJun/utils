@@ -4,11 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.sql.SQLUtils;
 import com.fuwenjun.projectUtils.webHttp.HttpUtil;
 
 public class MailTest {
 	public static void main(String[] args) {
-		String to="15061885056@163.com";
+	    String to="15061885056@163.com";
 		String title="html测试";                                                                                                                                                                                
 		String message="<html><head>                                                                                                                                                                            "
 				+"<base target='_blank'>                                                                                                                                                                                        "

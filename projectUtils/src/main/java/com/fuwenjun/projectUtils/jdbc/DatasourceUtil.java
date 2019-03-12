@@ -44,7 +44,7 @@ public class DatasourceUtil {
 	
 	private static boolean isExist(Map<String,Object> databaseInfo){
 		for(Map<String,Object> key: dbConfig.keySet()){
-			if(key.equals(databaseInfo))
+			if(key.equals(databaseInfo)&&!dbConfig.get(key).isClosed())
 				return true;
 		}
 		return false;

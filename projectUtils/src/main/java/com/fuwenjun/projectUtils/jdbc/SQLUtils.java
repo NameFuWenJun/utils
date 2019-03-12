@@ -185,4 +185,16 @@ public class SQLUtils {
         }
         return 1;
     }
+    /**
+     * sql操作执行完毕以后关闭driud数据连接
+     * @throws SQLException
+     */
+    public void close() throws SQLException{
+        if(connection!=null&&!connection.isClosed()){
+            connection.close();
+        }
+        if(druidDataSource!=null&&!druidDataSource.isClosed()){
+            druidDataSource.close();
+        }
+    }
 }
