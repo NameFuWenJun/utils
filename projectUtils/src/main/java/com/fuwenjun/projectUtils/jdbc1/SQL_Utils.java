@@ -24,8 +24,6 @@ public class SQL_Utils {
     private DruidDataSource dataSource=null;
     //数据库连接信息
     private DruidConifg druidConifg=null;
-    //默认的连接移除时间
-    private long removeAbandonedTimeout=300000l;
     
     private void init(DruidConifg config) throws Exception{
         druidConifg=config;
@@ -128,9 +126,9 @@ public class SQL_Utils {
     }
 
 
-    public DruidConifg getDruidConifg() throws Exception {
+    public DruidDataSource getDruidDataSource() throws Exception {
         cheackDataSource();
-        return druidConifg;
+        return dataSource;
     }
     /**
      * sql操作执行完毕以后关闭driud数据连接
