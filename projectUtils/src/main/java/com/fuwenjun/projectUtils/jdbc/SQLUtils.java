@@ -4,12 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.plaf.basic.BasicTreeUI.CellEditorHandler;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapHandler;
@@ -22,11 +18,11 @@ import net.sf.json.JSONObject;
 
 /**
  * 使用了Dbutils工具类操作数据库连接
+ * 谨慎使用connection作为成员变量
  * @author fuwenjun01
  *
  */
 public class SQLUtils {
-    private Connection connection;
     private DruidDataSource druidDataSource;
 
     //对每个连接在sqlUtils中进行保存
@@ -61,7 +57,6 @@ public class SQLUtils {
         info.put(DatabaseInfoConstants.USERNAME, userName);
         info.put(DatabaseInfoConstants.PASSWORD, password);
         druidDataSource = DatasourceUtil.getDataSource(info);
-        connection = druidDataSource.getConnection();
     }
     /**
      * 判断DataSource有没有被关闭
@@ -73,18 +68,6 @@ public class SQLUtils {
             //重新初始化DataSource
             init();
         }
-    }
-    /**
-     * 获取数据库连接
-     * @return
-     * @throws Exception 
-     */
-    public Connection getConnection() throws Exception {
-        cheackDataSource();
-        if(connection.isClosed()){
-            connection=druidDataSource.getConnection();
-        }
-        return connection;
     }
 
     /**
@@ -163,10 +146,9 @@ public class SQLUtils {
      */
     public int insertWithTrransaction(JSONArray jsonArray){
         QueryRunner queryRunner=new QueryRunner();
+        Connection connection=null;
         try {
-            if(connection.isClosed()){
-                connection=druidDataSource.getConnection();
-            }
+            connection=druidDataSource.getConnection();
             connection.setAutoCommit(false);
             for(int i=0;i<jsonArray.size();i++){
                 JSONObject sqlObject=jsonArray.getJSONObject(i);
@@ -201,9 +183,6 @@ public class SQLUtils {
      * @throws SQLException
      */
     public void close() throws SQLException{
-        if(connection!=null&&!connection.isClosed()){
-            connection.close();
-        }
         if(druidDataSource!=null&&!druidDataSource.isClosed()){
             druidDataSource.close();
         }
