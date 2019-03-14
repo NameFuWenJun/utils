@@ -10,20 +10,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.fuwenjun.projectUtils.jdbc.DataBase;
 
 public class SQL_Utils {
 
-    private Connection connection=null;
-
     private DruidDataSource dataSource=null;
     //数据库连接信息
     private DruidConifg druidConifg=null;
+    //默认的连接移除时间
+    private long removeAbandonedTimeout=300000l;
+    
     private void init(DruidConifg config) throws Exception{
         druidConifg=config;
         dataSource=ConnectDatabase.getDruidDataSource(config);
@@ -35,18 +38,6 @@ public class SQL_Utils {
     public SQL_Utils(DataBase type,String url,String username,String password) throws Exception{
         DruidConifg config=new DruidConifg(type, url, username, password);
         init(config);
-    }
-
-    public Connection getConnection() throws Exception{
-        if(connection!=null&&!connection.isClosed()){
-            return connection;
-        }else if(!dataSource.isClosed()){
-            connection=dataSource.getConnection();
-        }else{
-            dataSource=ConnectDatabase.getDruidDataSource(druidConifg);
-            connection=dataSource.getConnection();
-        }
-        return connection;
     }
 
     /**
@@ -67,7 +58,7 @@ public class SQL_Utils {
         cheackDataSource();
         List<Integer> res=new ArrayList<>();
         QueryRunner queryRunner=new QueryRunner();
-        connection=getConnection();
+        Connection connection=dataSource.getConnection();
         connection.setAutoCommit(false);
         try{
             for(SQLStatement statement:statemets){
@@ -146,14 +137,9 @@ public class SQL_Utils {
      * @throws SQLException
      */
     public void close() throws SQLException{
-        if(connection!=null&&!connection.isClosed()){
-            connection.close();
-        }
         if(dataSource!=null&&!dataSource.isClosed()){
             dataSource.close();
         }
     }
-
-
-
+    
 }

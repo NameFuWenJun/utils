@@ -46,6 +46,7 @@ public class SQLUtils {
         this.password = password;
         init();
     }
+    private Connection connection;
     private void init() throws Exception{
         // DataSource dataSource=new DataSource(url, userName, password); 10.11,shine,注释
         //connection=dataSource.getConnect(type); 10.11,shine,注释
@@ -57,6 +58,7 @@ public class SQLUtils {
         info.put(DatabaseInfoConstants.USERNAME, userName);
         info.put(DatabaseInfoConstants.PASSWORD, password);
         druidDataSource = DatasourceUtil.getDataSource(info);
+        connection=druidDataSource.getConnection();
     }
     /**
      * 判断DataSource有没有被关闭
